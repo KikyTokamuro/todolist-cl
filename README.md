@@ -1,3 +1,28 @@
+# todolist-cl
+
+Todolist with web UI, written in Common Lisp
+
+![preview](./preview.png)
+
+## Dependencies
+ - [hunchentoot](https://github.com/edicl/hunchentoot) - Web server
+ - [spinneret](https://github.com/ruricolist/spinneret) - HTML5 generator 
+ - [jonathan](https://github.com/Rudolph-Miller/jonathan) - JSON encoder and decoder
+ - [mito](https://github.com/fukamachi/mito) - ORM
+
+
+## Run
+```sh
+git clone https://github.com/KikyTokamuro/todolist-cl
+sbcl --load todolist.asd
+* (ql:quickload :todolist)
+* (todolist:start-server) ; For start todolist in "localhost:8080"
+* (todolist:stop-server) ; For stop todolist
+* (todolist:restart-server) ; For restart todolist
+```
+
+## License
+```
 MIT License
 
 Copyright (c) 2022 Daniil Arkhangelsky (Kiky Tokamuro)
@@ -19,3 +44,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
+
