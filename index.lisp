@@ -47,4 +47,4 @@
 		  (:div :class "separator")
 		  (:div :class "send-task-button"
 			(:img :src "./static/images/send.svg"))))
-      (:script :src "./static/script.js")))))
+      (:script :type "module" :src "./static/app.js")))))

@@ -33,7 +33,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 100%;
-    background: #f0fff0;
+    background: #f4f4f4;
     padding: 5px 20px 10px 20px;
 }
 
@@ -74,14 +74,10 @@ body {
 .todolist-input-wrapper {
     display: flex;
     flex-direction: row;
-    border-radius: 3px;
-    background: #fff;
     align-items: center;
-    padding: 5px 15px;
     margin-top: 10px;
-    height: auto;
-    border: 1px solid rgba(34, 60, 80, 0.18);
 }
+
 
 .todolist-search-wrapper {
     display: flex;
@@ -111,18 +107,20 @@ body {
 }
 
 #task-input {
-    width: 100%;
-    min-height: 20px;
-    max-height: 60px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    color: rgba(0, 0, 0, 1);
-    font-family: "Ubuntu Mono";
-    font-size: 14px;
-    font-style: normal;
-    font-variant: normal;
-    text-align: center;
-    resize: none;
+	width: 100%;
+	color: rgba(0, 0, 0, 1);
+	font-family: "Ubuntu Mono";
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	text-align: center;
+	resize: none;
+	border-radius: 3px;
+	background: #fff;
+	align-items: center;
+	padding: 5px 15px;
+	height: auto;
+	border: 1px solid rgba(34, 60, 80, 0.18);
 }
 
 #search-input::placeholder,
@@ -176,6 +174,7 @@ body {
     display: flex;
     width: 100%;
     max-height: calc(100vh - 217px);
+    height: calc(100vh - 217px);
     overflow-y: scroll;
     flex-direction: column;
     
@@ -209,16 +208,17 @@ body {
 }
 
 #task-group {
-    height: 21px;
-    width: 200px;
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    color: rgba(0, 0, 0, 1);
-    font-family: "Ubuntu Mono";
-    font-size: 14px;
-    font-style: normal;
-    font-variant: normal;
-    text-align: center;
+	height: 23px;
+	width: 200px;
+	color: rgba(0, 0, 0, 1);
+	font-family: "Ubuntu Mono";
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	text-align: center;
+	border-radius: 3px;
+	background: #fff;
+	border: 1px solid rgba(34, 60, 80, 0.18);
 }
 
 #task-group:focus {
@@ -226,7 +226,14 @@ body {
 }
 
 .send-task-button {
-    cursor: pointer;
+	cursor: pointer;
+	border: 1px solid rgba(34, 60, 80, 0.18);
+	border-radius: 3px;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3.5px;
 }
 
 .task-element {
@@ -270,6 +277,10 @@ body {
 }
 
 .task-element-delete {
-    cursor: pointer;
     margin-left: 10px;
+    height: 100%;
+}
+
+.task-element-delete img {
+    cursor: pointer;
 }
