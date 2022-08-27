@@ -47,6 +47,15 @@ export class TodolistAPI {
     }
 
     /**
+     * Get todos statistics
+     * 
+     * @returns jqXHR
+     */
+    getTodosStats () {
+	    return $.get('/api/todos/stats', {});
+    }
+    
+    /**
      * Change todo status
      * 
      * @param {string} group 

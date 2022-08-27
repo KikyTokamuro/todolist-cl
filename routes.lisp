@@ -46,6 +46,10 @@
   (api-todos-add (hunchentoot:get-parameter "group")
 		 (hunchentoot:get-parameter "text")))
 
+(hunchentoot:define-easy-handler (api-todos-get-stats-handler :uri "/api/todos/stats") ()
+  (setf (hunchentoot:content-type*) "application/json")
+  (api-todos-get-stats))
+
 (hunchentoot:define-easy-handler (api-todos-export-csv-handler :uri "/api/generate/csv") ()
   (setf (hunchentoot:content-type*) "text/csv")
   (setf (hunchentoot:header-out "Content-Disposition" )

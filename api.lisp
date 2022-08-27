@@ -2,6 +2,10 @@
 
 (in-package #:todolist)
 
+(defun string-to-keyword (str)
+  "String -> :KEYWORD"
+  (values (intern (string-upcase str) "KEYWORD")))
+
 (defun json-error (message)
   "Generate JSON error"
   (jonathan:to-json (list :error message)))
@@ -23,7 +27,7 @@
   (let ((response '()))
     (loop for todo in (mito:select-dao 'todos)
 	  do (let* ((group-name (todos-group todo))
-		    (group-name-sym (values (intern (string-upcase group-name) "KEYWORD")))
+		    (group-name-sym (string-to-keyword group-name)))
 		    (response-element (getf response group-name-sym))
 		    (todo-info (list :id (mito:object-id todo)
 				     :status (todos-status todo)
@@ -88,6 +92,24 @@
 				      :date (local-time:format-timestring nil (mito:object-created-at todo)
 									  :format local-time:+asctime-format+)))
 	      (json-error "Error create todo"))))))
+
+(defun api-todos-get-stats ()
+  "Get statistics by todos"
+  (let ((response '())
+	(todos-stats (mito:retrieve-by-sql
+		      (sxql:select (:group :status (:as (:count :*) :count))
+			(sxql:group-by :group :status)
+			(sxql:from (sxql:make-sql-symbol (mito.class.table:table-name (find-class 'todos))))))))
+    (loop for stats in todos-stats
+	  do (let* ((group-name-sym (string-to-keyword (getf stats ':group)))
+		    (status-sym (string-to-keyword (getf stats ':status)))
+		    (count (getf stats ':count))
+		    (group-origname (substitute #\space #\_ (getf stats ':group))))
+	       (progn
+		 (if (not (getf response group-name-sym))
+		     (setf (getf response group-name-sym) (list :todo 0 :doing 0 :done 0 :origname group-origname)))
+		 (setf (getf (getf response group-name-sym) status-sym) count))))
+    (jonathan:to-json response)))
 
 (defun api-todos-export-csv ()
   "Export todos to csv"
