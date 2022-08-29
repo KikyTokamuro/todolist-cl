@@ -27,7 +27,7 @@
   (let ((response '()))
     (loop for todo in (mito:select-dao 'todos)
 	  do (let* ((group-name (todos-group todo))
-		    (group-name-sym (string-to-keyword group-name)))
+		    (group-name-sym (string-to-keyword group-name))
 		    (response-element (getf response group-name-sym))
 		    (todo-info (list :id (mito:object-id todo)
 				     :status (todos-status todo)
