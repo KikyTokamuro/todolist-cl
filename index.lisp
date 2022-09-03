@@ -14,15 +14,19 @@
      (:head
       (:title "todolist")
       (:link :rel "stylesheet" :href "./static/style.css")
-      (:link :rel "stylesheet" :href "https://fonts.googleapis.com/css?family=Ubuntu+Mono")
+      (:link :rel "stylesheet" :href "./static/libs/jquery-ui.css")
+      (:link :rel "stylesheet" :href "./static/libs/liner-bar.css")
       (:link :rel "icon" :type "image/x-icon" :href "./static/images/favicon.ico")
-      (:script :src "https://code.jquery.com/jquery-3.6.0.min.js")
-      (:script :src "https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"))
+      (:script :src "./static/libs/jquery.min.js")
+      (:script :src "./static/libs/jquery-ui.min.js")
+      (:script :src "./static/libs/liner-bar.js"))
      (:body
       (:div :class "todolist-wrapper"
 	    (:div :class "todolist-tools"
 		  (:a :id "generate-csv" :href "/api/generate/csv"
 		      (:img :src "./static/images/csv.svg"))
+		  (:div :id "statistics"
+		      (:img :src "./static/images/stats.svg"))
 		  (:a :href "https://github.com/KikyTokamuro/todolist-cl" :target "_blank"
 		      (version)))
 	    (:div :class "todolist-groups-wrapper"
@@ -47,4 +51,5 @@
 		  (:div :class "separator")
 		  (:div :class "send-task-button"
 			(:img :src "./static/images/send.svg"))))
+      (:div :class "todolist-statistics-modal" :style "display:none" :title "Statistics")
       (:script :type "module" :src "./static/app.js")))))

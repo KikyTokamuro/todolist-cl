@@ -46,7 +46,50 @@ export class TodolistUI {
                 .click((event) => this.createTodo(event));
             $("#search-input")
                 .keyup((event) => this.searchTodo(event));
+            $("#statistics")
+                .click(() => this.showStatistics());
         });
+    };
+
+    /**
+     * Show statistics modal window
+     */
+    showStatistics () {
+        this.api.getTodosStats().done((data) => {
+            let content = "";
+            let lineData = [];
+
+            // Setup data
+            Object.entries(data).forEach((group) => {
+                content += `<div class="statistic-element" data-group="${group[1].ORIGNAME}"></div>`;
+                lineData.push({
+                    title: group[1].ORIGNAME,
+                    items: [
+                        { name: "TODO",  value: group[1].TODO,  color: "#999999" }, 
+                        { name: "DOING", value: group[1].DOING, color: "#555555" },
+                        { name: "DONE",  value: group[1].DONE,  color: "#222222" },
+                    ]
+                });
+            });
+
+            // Show modal window
+            $(".todolist-statistics-modal").dialog({
+                height: window.innerHeight / 1.2,
+                width: window.innerWidth / 2,
+                modal: true,
+                open: function( event, ui ) {
+                    $(event.target).html(content);
+
+                    // Setup liner bars
+                    lineData.forEach((element) => {
+                        (new LinerBar(
+                            `.statistic-element[data-group="${element.title}"]`, 
+                            element
+                        )).render();
+                    });
+                }
+            });
+        })
     };
 
     /**

@@ -17,8 +17,58 @@ body {
     align-items: center;
 }
 
-#generate-csv {
+#generate-csv,
+#statistics {
     margin-right: 10px;
+}
+
+#statistics img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.ui-button .ui-icon {
+    background-image: url("./images/ui-icons_777777_256x240.png") !important;
+}
+
+.ui-widget-content .ui-icon {
+	background-image: url("./images/ui-icons_444444_256x240.png") !important;
+}
+
+.ui-widget-header .ui-icon {
+	background-image: url("./images/ui-icons_444444_256x240.png") !important;
+}
+
+.ui-widget-header {
+    background: #f4f4f4 !important;
+}
+
+.ui-button:active {
+    border: 1px solid #ebebeb !important;
+    background: #ebebeb !important;
+}
+
+.todolist-statistics-modal {
+    overflow-y: scroll;
+}
+
+.statistic-element {
+    margin-bottom: 10px;
+}
+
+.liner-bar-card {
+    border-radius: 3px !important;
+    border: 1px solid rgba(34, 60, 80, 0.18) !important;
+    box-shadow: none !important;
+}
+
+.liner-bar-card-title {
+    font-size: 17px !important;
+}
+
+.liner-bar-progess-item {
+    border-radius: 3px !important;
 }
 
 .todolist-tools a,
