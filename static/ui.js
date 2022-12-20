@@ -22,32 +22,96 @@ export class TodolistUI {
             data.forEach(i => {
                 // Draw all groups button
                 $(".todolist-groups-wrapper")
-                    .append(`
-                        <div class="todolist-group-button" id="group-${i.NAME.toLowerCase()}">
-                            <span>${i.NAME.replaceAll("_", " ")}</span>
-                            <div class="group-element-delete">
-                                <img src="./static/images/delete.svg">    
-                            </div>
-                        </div>
-                    `);
+                    .append(this.generateGroupElement(i.NAME.toLowerCase()));
             });
 
             this.selectGroup("all");
     
-            // Setup event handlers
-            $(".todolist-group-button span")
-                .click((event) => this.selectGroupClick(event));
-            $(".group-element-delete")
-                .click((event) => this.deleteGroup(event));
+            // Select group event
+            $(".todolist-wrapper")
+                .on("click", ".todolist-group-button span", 
+                    (event) => this.selectGroupClick(event));
+
+            // Delete group event
+            $(".todolist-wrapper")
+                .on("click", ".group-element-delete", 
+                    (event) => this.deleteGroup(event));
+
+            // Delete todo event
             $(".todolist-body")
                 .on("click", ".task-element .task-element-delete img", 
                     (event) => this.deleteTodo(event));
-            $(".send-task-button")
-                .click((event) => this.createTodo(event));
+
+            // Create new task event
+            $(".todolist-create-button")
+                .click(() => this.showCreateTask());
+
+            // Search event
             $("#search-input")
                 .keyup((event) => this.searchTodo(event));
+
+            // Open statistics event
             $("#statistics")
                 .click(() => this.showStatistics());
+        });
+    };
+
+    /**
+     * Show create task modal window
+     */
+    showCreateTask() {
+        // Setup quill editor
+        const quill = new Quill('.todolist-task-editor', {
+            theme: 'snow'
+        });  
+
+        // Create todo event
+        $(".todolist-create-task-modal")
+            .off("click", ".send-task-button")
+            .on("click", ".send-task-button", () => {
+                this.createTodo(quill)
+            });
+
+        // Show modal window
+        $(".todolist-create-task-modal").dialog({
+            height: window.innerHeight / 1.2,
+            width: window.innerWidth / 2,
+            modal: true,
+        });
+    }
+
+    /**
+     * Create new todo
+     *  
+     * @param {Quill} quill 
+     */
+    createTodo (quill) {
+        const taskText = quill.root.innerHTML;
+        const taskGroup = $("#task-group").val().replaceAll(" ", "_");
+
+        if (taskText == "" || taskGroup == "") {
+            alert("The task or its group cannot be empty");
+            return;
+        }
+
+        this.api.createNewTodo(taskGroup, taskText).done((data) => {
+            if (data.ERROR == undefined) {
+                $(".todolist-todo-column-body")
+                    .prepend(this.generateTaskElement(
+                        data.GROUP, data.ID, data.STATUS, data.DATE, data.TEXT
+                    ));
+
+                if ($(`#group-${taskGroup}`).length == 0) {
+                    // Append new group
+                    $(".todolist-groups-wrapper").append(this.generateGroupElement(taskGroup));
+                    $(`#group-${taskGroup} span`).click();
+                }
+
+                $("#task-group").val("");
+                $(".todolist-create-task-modal").dialog("close")
+            } else {
+                alert(data.ERROR);
+            }
         });
     };
 
@@ -95,14 +159,18 @@ export class TodolistUI {
     /**
      * Generate html for todo element
      * 
-     * @param {string} group 
-     * @param {int} id 
-     * @param {string} status 
-     * @param {string} date 
-     * @param {string} text 
-     * @returns string
+     * @param   {string} group 
+     * @param   {int}    id 
+     * @param   {string} status 
+     * @param   {string} date 
+     * @param   {string} text 
+     * @returns {string}
      */
     generateTaskElement (group, id, status, date, text) {
+        // Remove html tags from text
+        text = $("<div>").html(text).text().substring(0, 200);
+
+        // Return template
         return `
             <div class="task-element" group="${group}" status="${status}" todo-id="${id}">
                 <div class="task-element-text">
@@ -114,6 +182,23 @@ export class TodolistUI {
                 </div>
             </div>
         `;
+    };
+
+    /**
+     * Generate html for group button 
+     * 
+     * @param   {string} taskGroup 
+     * @returns {string}
+     */
+    generateGroupElement (taskGroup) {
+        return `
+            <div class="todolist-group-button" id="group-${taskGroup}" style="background: rgba(255, 255, 255);">
+                <span>${taskGroup.replaceAll("_", " ")}</span>
+                <div class="group-element-delete">
+                    <img src="./static/images/delete.svg">
+                </div>
+            </div>
+        `
     };
 
     /**
@@ -191,11 +276,11 @@ export class TodolistUI {
         const group = $(groupElement).attr("id").replace("group-", "");
 
         this.api.deleteGroup(group).done((data) => {
-            if (data.error == undefined) {
+            if (data.ERROR == undefined) {
                 $(`#group-${group}`).remove();
                 $("#group-all span").click();
             } else {
-                alert(data.error);
+                alert(data.ERROR);
             }
         });
     };
@@ -211,59 +296,10 @@ export class TodolistUI {
         const id = $(todoElement).attr("todo-id");
 
         this.api.deleteTodo(group, id).done((data) => {
-            if (data.error == undefined) {
+            if (data.ERROR == undefined) {
                 $(`.task-element[todo-id="${data.ID}"][group="${data.GROUP}"]`).remove();
             } else {
-                alert(data.error);
-            }
-        });
-    };
-
-    /**
-     * Create new todo
-     * 
-     * @param {Event} event 
-     */
-    createTodo (event) {
-        const taskText = $("#task-input").val();
-        const taskGroup = $("#task-group").val().replaceAll(" ", "_");
-
-        if (taskText == "" || taskGroup == "") {
-            alert("The task or its group cannot be empty");
-            return;
-        }
-
-        this.api.createNewTodo(taskGroup, taskText).done((data) => {
-            if (data.error == undefined) {
-                $(".todolist-todo-column-body")
-                    .prepend(this.generateTaskElement(
-                        data.GROUP, data.ID, data.STATUS, data.DATE, data.TEXT
-                    ));
-
-                if ($(`#group-${taskGroup}`).length == 0) {
-                    // Append new group
-                    $(".todolist-groups-wrapper").append(`
-                        <div class="todolist-group-button" id="group-${taskGroup}" style="background: rgba(255, 255, 255);">
-                            <span>${taskGroup.replaceAll("_", " ")}</span>
-                            <div class="group-element-delete">
-                                <img src="./static/images/delete.svg">
-                            </div>
-                        </div>
-                    `);
-
-                    $(`#group-${taskGroup} span`)
-                        .click((event) => this.selectGroupClick(event));
-                    $(`#group-${taskGroup} .group-element-delete`)
-                        .click((event) => this.deleteGroup(event));
-                    $(`#group-${taskGroup} span`).click();
-                }
-
-                $(`.task-element[todo-id="${data.ID}"][group="${taskGroup}"] .task-element-delete img`)
-                    .click((event) => this.deleteTodo(event));
-                $("#task-input").val("");
-                $("#task-group").val("");
-            } else {
-                alert(data.error);
+                alert(data.ERROR);
             }
         });
     };
@@ -293,11 +329,11 @@ export class TodolistUI {
             element.attr("todo-id"),
             newStatus
         ).done((data) => {
-            if (data.error == undefined) {
+            if (data.ERROR == undefined) {
                 // Change status on element
                 $(element).attr("status", newStatus);
             } else {
-                alert(data.error);
+                alert(data.ERROR);
             }
         });
     };

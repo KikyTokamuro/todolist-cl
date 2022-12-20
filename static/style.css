@@ -128,7 +128,6 @@ body {
     margin-top: 10px;
 }
 
-
 .todolist-search-wrapper {
     display: flex;
     flex-direction: row;
@@ -248,7 +247,7 @@ body {
   
 #task-group {
 	height: 23px;
-	width: 200px;
+	width: 100%;
 	color: rgba(0, 0, 0, 1);
 	font-family: "Ubuntu Mono";
 	font-size: 14px;
@@ -258,6 +257,7 @@ body {
 	border-radius: 3px;
 	background: #fff;
 	border: 1px solid rgba(34, 60, 80, 0.18);
+    margin-right: 10px;
 }
 
 #task-group:focus {
@@ -352,4 +352,24 @@ body {
 .todolist-create-button img {
     width: 25px;
     height: 25px;
+}
+
+.todolist-create-task-modal {
+    display: flex;
+    flex-direction: column;
+}
+
+.todolist-task-editor,
+.ql-toolbar {
+    border: 1px solid rgba(34, 60, 80, 0.18) !important;
+    border-radius: 3px;
+}
+
+.todolist-task-editor {
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.ql-toolbar {
+    margin-bottom: 10px;
 }

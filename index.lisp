@@ -48,14 +48,12 @@
 			(:div :class "column todolist-done-column-body")))
 	    (:div :class "todolist-create-button"
 		  (:img :src "./static/images/pencil.svg")))
-	    ;; (:div :class "todolist-input-wrapper"
-	    ;; 	  (:textarea :id "task-input" :rows "1" :placeholder "Insert task")
-	    ;; 	  (:div :class "separator")
-	    ;; 	  (:input :type "text" :id "task-group" :placeholder "Insert task group")
-	    ;; 	  (:div :class "separator")
-	    ;; 	  (:div :class "send-task-button"
-	    ;; 		(:img :src "./static/images/send.svg"))))
-      (:div :class "todolist-create-task-modal" :style "display:none" :title "New task")
+      (:div :class "todolist-create-task-modal" :style "display:none" :title "New task"
+	    (:div :class "todolist-task-editor")
+	    (:div :class "todolist-input-wrapper"
+		  (:input :type "text" :id "task-group" :placeholder "Insert task group")
+		  (:div :class "send-task-button"
+			(:img :src "./static/images/send.svg"))))
       (:div :class "todolist-edit-task-modal" :style "display:none" :title "Edit task")
       (:div :class "todolist-statistics-modal" :style "display:none" :title "Statistics")
       (:script :type "module" :src "./static/app.js")))))
