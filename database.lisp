@@ -29,7 +29,7 @@
   (mito:create-dao 'groups :name "others")
   (mito:create-dao 'todos
 		   :group "study"
-		   :text "Hello Friend! This is a test note, on it you can try how this application works."
+		   :text "<p>Hello Friend! This is a test note, on it you can try how this application works.</p>"
 		   :status "todo"))
 
 (defun database-connect ()
