@@ -52,6 +52,21 @@
 	       (mito:retrieve-dao 'todos :group group-name))
        '())))
 
+(defun api-todos-by-group-and-id (group-name todo-id)
+  "Return todo by group and id"
+  (cond ((null (and group-name todo-id))
+	 (json-error "Empty params"))
+	(t
+	 (let ((todo (mito:find-dao 'todos :id todo-id :group group-name)))
+	   (if (not todo)
+	       (json-error "Todo not found")
+	       (progn
+		 (jonathan:to-json (list :id (mito:object-id todo)
+					 :status (todos-status todo)
+					 :text (todos-text todo)
+					 :date (local-time:format-timestring nil (mito:object-created-at todo)
+									     :format local-time:+asctime-format+)))))))))
+
 (defun api-todos-change-status (group-name todo-id status)
   "Change todo status"
   (cond ((null (and group-name todo-id status))
@@ -105,10 +120,9 @@
 		    (status-sym (string-to-keyword (getf stats ':status)))
 		    (count (getf stats ':count))
 		    (group-origname (substitute #\space #\_ (getf stats ':group))))
-	       (progn
-		 (if (not (getf response group-name-sym))
-		     (setf (getf response group-name-sym) (list :todo 0 :doing 0 :done 0 :origname group-origname)))
-		 (setf (getf (getf response group-name-sym) status-sym) count))))
+	       (if (not (getf response group-name-sym))
+		   (setf (getf response group-name-sym) (list :todo 0 :doing 0 :done 0 :origname group-origname)))
+	       (setf (getf (getf response group-name-sym) status-sym) count)))
     (jonathan:to-json response)))
 
 (defun api-todos-export-csv ()

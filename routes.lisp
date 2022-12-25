@@ -6,50 +6,22 @@
   "Get full path to todolist elements"
   (asdf:system-relative-pathname "todolist" dir))
 
+;;; Generate hunchentoot:define-easy-handler with json content-type
+(defmacro json-router (name uri &rest body)
+  `(hunchentoot:define-easy-handler (,name :uri ,uri) ()
+    (setf (hunchentoot:content-type*) "application/json")
+    ,@body))
+
 ;;; Static files handler
 (push (hunchentoot:create-folder-dispatcher-and-handler "/static/" (project-dir "./static/"))
       hunchentoot:*dispatch-table*)
 
+;;; Index page
 (hunchentoot:define-easy-handler (home-page-handler :uri "/") ()
   (setf (hunchentoot:content-type*) "text/html")
   (index-page))
 
-(hunchentoot:define-easy-handler (api-group-list-handler :uri "/api/group/list") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-group-list))
-
-(hunchentoot:define-easy-handler (api-group-delete-handler :uri "/api/group/delete") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-group-delete (hunchentoot:get-parameter "group")))
-
-(hunchentoot:define-easy-handler (api-todos-all-handler :uri "/api/todos/all") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-todos-all))
-
-(hunchentoot:define-easy-handler (api-todos-by-group-handler :uri "/api/todos") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-todos-by-group (hunchentoot:get-parameter "group")))
-
-(hunchentoot:define-easy-handler (api-todos-change-status-handler :uri "/api/todos/status/change") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-todos-change-status (hunchentoot:get-parameter "group")
-			   (hunchentoot:get-parameter "todoid")
-			   (hunchentoot:get-parameter "status")))
-
-(hunchentoot:define-easy-handler (api-todos-delete-handler :uri "/api/todos/delete") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-todos-delete (hunchentoot:get-parameter "group")
-		    (hunchentoot:get-parameter "todoid")))
-
-(hunchentoot:define-easy-handler (api-todos-add-handler :uri "/api/todos/add") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-todos-add (hunchentoot:get-parameter "group")
-		 (hunchentoot:get-parameter "text")))
-
-(hunchentoot:define-easy-handler (api-todos-get-stats-handler :uri "/api/todos/stats") ()
-  (setf (hunchentoot:content-type*) "application/json")
-  (api-todos-get-stats))
-
+;;; Get csv with todos
 (hunchentoot:define-easy-handler (api-todos-export-csv-handler :uri "/api/generate/csv") ()
   (setf (hunchentoot:content-type*) "text/csv")
   (setf (hunchentoot:header-out "Content-Disposition" )
@@ -57,3 +29,45 @@
 		(local-time:format-timestring nil (local-time:now)
 					      :format local-time:+asctime-format+)))
   (api-todos-export-csv))
+
+
+;;; Get list of groups
+(json-router api-group-list-handler "/api/group/list"
+	     (api-group-list))
+
+;;; Delete group
+(json-router api-group-delete-handler "/api/group/delete"
+	     (api-group-delete (hunchentoot:get-parameter "group")))
+
+;;; Get list of todos
+(json-router api-todos-all-handler "/api/todos/all"
+	     (api-todos-all))
+
+;;; Get list of todos by group
+(json-router api-todos-by-group-handler "/api/todos"
+	     (api-todos-by-group (hunchentoot:get-parameter "group")))
+
+;;; Get todo by group and id
+(json-router api-todos-by-group-and-id-handler "/api/todos/get"
+	     (api-todos-by-group-and-id (hunchentoot:get-parameter "group")
+					(hunchentoot:get-parameter "todoid")))
+
+;;; Change todo status
+(json-router api-todos-change-status-handler "/api/todos/status/change"
+	     (api-todos-change-status (hunchentoot:get-parameter "group")
+				      (hunchentoot:get-parameter "todoid")
+				      (hunchentoot:get-parameter "status")))
+
+;;; Delete todo by group and id
+(json-router api-todos-delete-handler "/api/todos/delete"
+	     (api-todos-delete (hunchentoot:get-parameter "group")
+			       (hunchentoot:get-parameter "todoid")))
+
+;;; Add new todo in group
+(json-router api-todos-add-handler "/api/todos/add"
+	     (api-todos-add (hunchentoot:get-parameter "group")
+			    (hunchentoot:get-parameter "text")))
+
+;;; Get todos statistics
+(json-router api-todos-get-stats-handler "/api/todos/stats"
+	     (api-todos-get-stats))
