@@ -42,6 +42,11 @@ export class TodolistUI {
                 .on("click", ".task-element .task-element-delete img", 
                     (event) => this.deleteTodo(event));
 
+            // Edit todo event
+            $(".todolist-body")
+                .on("click", ".task-element .task-element-edit img", 
+                    (event) => this.editTodo(event));
+
             // Create new task event
             $(".todolist-create-button")
                 .click(() => this.showCreateTask());
@@ -60,8 +65,11 @@ export class TodolistUI {
      * Show create task modal window
      */
     showCreateTask() {
+        // Remove old toolbar
+        $(".todolist-create-task-modal .ql-toolbar").remove();
+
         // Setup quill editor
-        const quill = new Quill('.todolist-task-editor', {
+        const quill = new Quill(".todolist-create-task-modal .todolist-task-editor", {
             theme: 'snow'
         });  
 
@@ -77,6 +85,11 @@ export class TodolistUI {
             height: window.innerHeight / 1.2,
             width: window.innerWidth / 2,
             modal: true,
+            close: function( event, ui ) {
+                // Clear inputs
+                $("#task-group").val("");
+                quill.root.innerHTML = "";
+            }
         });
     }
 
@@ -107,7 +120,7 @@ export class TodolistUI {
                     $(`#group-${taskGroup} span`).click();
                 }
 
-                $("#task-group").val("");
+                // Close modal
                 $(".todolist-create-task-modal").dialog("close")
             } else {
                 alert(data.ERROR);
@@ -168,7 +181,7 @@ export class TodolistUI {
      */
     generateTaskElement (group, id, status, date, text) {
         // Remove html tags from text
-        text = $("<div>").html(text).text().substring(0, 200);
+        text = $("<div>").html(text).text();
 
         // Return template
         return `
@@ -177,8 +190,13 @@ export class TodolistUI {
                     <div class="task-element-text-info">${date} <div class="task-element-id">#${group}${id}</div></div>
                     <div class="task-element-text-todo">${text}</div>
                 </div>
-                <div class="task-element-delete">
-                    <img src="./static/images/delete.svg">
+                <div class="task-element-options">
+                    <div class="task-element-delete">
+                        <img src="./static/images/delete.svg">
+                    </div>
+                    <div class="task-element-edit">
+                        <img src="./static/images/pencil.svg">
+                    </div>
                 </div>
             </div>
         `;
@@ -303,6 +321,44 @@ export class TodolistUI {
             }
         });
     };
+
+    /**
+     * Open edit window for todo
+     * 
+     * @param {Event} event 
+     */
+    editTodo (event) {
+        const todoElement = $(event.target).closest(".task-element");
+        const group = $(todoElement).attr("group");
+        const id = $(todoElement).attr("todo-id");
+
+        this.api.getTodoByGroupAndId(group, id).done((data) => {
+            if (data.ERROR == undefined) {
+                // Remove old toolbar
+                $(".todolist-edit-task-modal .ql-toolbar").remove();
+
+                // Setup quill editor
+                const quill = new Quill(".todolist-edit-task-modal .todolist-task-editor", {
+                    theme: 'snow'
+                }); 
+                quill.root.innerHTML = data.TEXT;
+
+                // Show modal window
+                $(".todolist-edit-task-modal").dialog({
+                    height: window.innerHeight / 1.2,
+                    width: window.innerWidth / 2,
+                    modal: true,
+                    close: function( event, ui ) {
+                        // Clear inputs
+                        $("#task-group").val("");
+                        quill.root.innerHTML = "";
+                    }
+                });
+            } else {
+                alert(data.ERROR);
+            }
+        });
+    }
 
     /**
      * Search event handler

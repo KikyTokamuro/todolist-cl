@@ -54,6 +54,7 @@
 		  (:input :type "text" :id "task-group" :placeholder "Insert task group")
 		  (:div :class "send-task-button"
 			(:img :src "./static/images/send.svg"))))
-      (:div :class "todolist-edit-task-modal" :style "display:none" :title "Edit task")
+      (:div :class "todolist-edit-task-modal" :style "display:none" :title "Edit task"
+	    (:div :class "todolist-task-editor"))
       (:div :class "todolist-statistics-modal" :style "display:none" :title "Statistics")
       (:script :type "module" :src "./static/app.js")))))

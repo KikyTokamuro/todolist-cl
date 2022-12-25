@@ -47,6 +47,20 @@ export class TodolistAPI {
     }
 
     /**
+     * Get todo by group and id
+     * 
+     * @param {string} group 
+     * @param {number} todoid 
+     * @returns jqXHR
+     */
+    getTodoByGroupAndId(group, todoid) {
+        return $.get('/api/todos/get', {
+            group: group,
+            todoid: todoid,
+        }, 'json');
+    }
+
+    /**
      * Get todos statistics
      * 
      * @returns jqXHR
