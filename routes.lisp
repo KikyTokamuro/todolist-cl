@@ -58,7 +58,7 @@
 				      (hunchentoot:get-parameter "todoid")
 				      (hunchentoot:get-parameter "status")))
 
-;;; Change todo status
+;;; Change todo text
 (json-router api-todos-change-text-handler "/api/todos/text/change"
 	     (api-todos-change-text (hunchentoot:get-parameter "group")
 				    (hunchentoot:get-parameter "todoid")
