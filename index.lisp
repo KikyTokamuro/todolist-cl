@@ -53,8 +53,12 @@
 	    (:div :class "todolist-input-wrapper"
 		  (:input :type "text" :id "task-group" :placeholder "Insert task group")
 		  (:div :class "send-task-button"
-			(:img :src "./static/images/send.svg"))))
+			(:img :src "./static/images/send.svg")
+			"Create")))
       (:div :class "todolist-edit-task-modal" :style "display:none" :title "Edit task"
-	    (:div :class "todolist-task-editor"))
+	    (:div :class "todolist-task-editor")
+	    (:div :class "edit-task-button"
+		  (:img :src "./static/images/save.svg")
+		  "Save changes"))
       (:div :class "todolist-statistics-modal" :style "display:none" :title "Statistics")
       (:script :type "module" :src "./static/app.js")))))

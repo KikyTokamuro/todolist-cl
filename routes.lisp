@@ -58,6 +58,12 @@
 				      (hunchentoot:get-parameter "todoid")
 				      (hunchentoot:get-parameter "status")))
 
+;;; Change todo status
+(json-router api-todos-change-text-handler "/api/todos/text/change"
+	     (api-todos-change-text (hunchentoot:get-parameter "group")
+				    (hunchentoot:get-parameter "todoid")
+				    (hunchentoot:get-parameter "text")))
+
 ;;; Delete todo by group and id
 (json-router api-todos-delete-handler "/api/todos/delete"
 	     (api-todos-delete (hunchentoot:get-parameter "group")
