@@ -272,20 +272,29 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 3.5px;
+	padding: 3.5px 5px 3.5px 5px;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.send-task-button img {
+    margin-right: 10px;
+}
+
+.send-task-button:hover {
+    background: #009688;
+    color: #fff;
 }
 
 .send-task-button:hover img {
     filter: brightness(0) 
             saturate(100%) 
-            invert(39%) 
-            sepia(68%) 
-            saturate(4246%) 
-            hue-rotate(154deg) 
-            brightness(94%) 
-            contrast(101%);
+            invert(87%) 
+            sepia(88%) 
+            saturate(1%) 
+            hue-rotate(265deg) 
+            brightness(111%) 
+            contrast(97%);
 }
-
 
 .task-element {
     display: flex;
@@ -399,6 +408,47 @@ body {
 .todolist-task-editor {
     height: 100%;
     overflow-y: scroll;
+}
+
+.edit-task-button {
+    height: 23px;
+    font-family: "Ubuntu Mono";
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    border-radius: 3px;
+    background: #fff;
+    border: 1px solid rgba(34, 60, 80, 0.18);
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    align-items: center;
+    padding: 3.5px;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.edit-task-button:hover {
+    background: #009688;
+    color: #fff;
+}
+
+.edit-task-button:hover img {
+    filter: brightness(0) 
+            saturate(100%) 
+            invert(87%) 
+            sepia(88%) 
+            saturate(1%) 
+            hue-rotate(265deg) 
+            brightness(111%) 
+            contrast(97%);
+    opacity: 1;
+}
+
+.edit-task-button img {
+    width: 18px;
+    margin-right: 10px;
+    opacity: 0.3;
 }
 
 .ql-toolbar {
