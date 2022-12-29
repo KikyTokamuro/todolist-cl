@@ -55,7 +55,7 @@ export class TodolistAPI {
      */
     getTodoByGroupAndId(group, todoid) {
         return $.get('/api/todos/get', {
-            group:  group,
+            group: group,
             todoid: todoid,
         }, 'json');
     }
@@ -79,25 +79,9 @@ export class TodolistAPI {
      */
     changeTodoStatus (group, id, status) {
         return $.get('/api/todos/status/change', {
-            group:  group,
+            group: group,
             todoid: id,
             status: status
-        }, 'json');
-    };
-
-    /**
-     * Change todo text
-     * 
-     * @param {string} group 
-     * @param {number} id 
-     * @param {string} text 
-     * @returns jqXHR
-     */
-     changeTodoText (group, id, text) {
-        return $.get('/api/todos/text/change', {
-            group:  group,
-            todoid: id,
-            text:   text
         }, 'json');
     };
 
@@ -111,7 +95,7 @@ export class TodolistAPI {
     createNewTodo (group, text) {
         return $.get('/api/todos/add', {
             group: group,
-            text:  text,
+            text: text,
         }, 'json');
     };
 
@@ -124,7 +108,7 @@ export class TodolistAPI {
      */
     deleteTodo (group, todoid) {
         return $.get('/api/todos/delete', {
-            group:  group,
+            group: group,
             todoid: todoid,
         }, 'json');
     }

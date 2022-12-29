@@ -121,7 +121,7 @@ export class TodolistUI {
                 }
 
                 // Close modal
-                $(".todolist-create-task-modal").dialog("close");
+                $(".todolist-create-task-modal").dialog("close")
             } else {
                 alert(data.ERROR);
             }
@@ -331,7 +331,6 @@ export class TodolistUI {
         const todoElement = $(event.target).closest(".task-element");
         const group = $(todoElement).attr("group");
         const id = $(todoElement).attr("todo-id");
-        const $this = this;
 
         this.api.getTodoByGroupAndId(group, id).done((data) => {
             if (data.ERROR == undefined) {
@@ -353,33 +352,13 @@ export class TodolistUI {
                         // Clear inputs
                         $("#task-group").val("");
                         quill.root.innerHTML = "";
-                    },
-                    open: function ( event, ui ) {
-                        // Save changes event
-                        $(".todolist-edit-task-modal")
-                            .off("click", ".edit-task-button")
-                            .on("click", ".edit-task-button", () => {
-                                $this.api.changeTodoText(group, id, quill.root.innerHTML)
-                                    .done((data) => {
-                                        if (data.ERROR == undefined) {
-                                            // Generate new html
-                                            const newElement = $this.generateTaskElement(group, id, data.STATUS, data.DATE, data.TEXT);
-                                            // Replace old task
-                                            $(`.task-element[todo-id="${id}"][group="${group}"]`).replaceWith(newElement);
-                                            // Close modal
-                                            $(".todolist-edit-task-modal").dialog("close");
-                                        } else {
-                                            alert(data.ERROR);
-                                        }
-                                    });
-                            });
                     }
                 });
             } else {
                 alert(data.ERROR);
             }
         });
-    };
+    }
 
     /**
      * Search event handler
