@@ -23,6 +23,17 @@ sbcl --load todolist.asd
 * (todolist:restart-server) ; For restart todolist
 ```
 
+# Building EXE on Windows and run (may be not working in future releases)
+1. Download sqlite3.dll from [sqlite.org](https://www.sqlite.org/download.html) and put to project directory
+2. Open PowerShell and build:
+```powershell
+sbcl --load .\todolist.asd `
+    --eval '(push :hunchentoot-no-ssl *features*)' `
+    --eval '(ql:quickload :todolist)' `
+    --eval "(sb-ext:save-lisp-and-die #p\`"todolist.exe\`" :toplevel #'(lambda () (todolist:start-server) (sb-thread:join-thread (find-if (lambda (th) (search \`"hunchentoot-listener\`" (sb-thread:thread-name th))) (sb-thread:list-all-threads)))) :executable t)"
+```
+3. Run todolist.exe
+
 ## License
 ```
 MIT License
