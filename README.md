@@ -23,7 +23,7 @@ sbcl --load todolist.asd
 * (todolist:restart-server) ; For restart todolist
 ```
 
-# Building EXE on Windows and run (may be not working in future releases)
+## Building EXE on Windows and run (may be not working in future releases)
 1. Download sqlite3.dll from [sqlite.org](https://www.sqlite.org/download.html) and put to project directory
 2. Open PowerShell and build:
 ```powershell
