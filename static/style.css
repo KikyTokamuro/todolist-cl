@@ -234,15 +234,17 @@ body {
     scrollbar-color:  rgba(0,0,0,0.2) #ffffff;
 }
 *::-webkit-scrollbar {
-    width: 16px;
+    width: 4px;
 }
 *::-webkit-scrollbar-track {
     background: #ffffff;
 }
+.todolist-groups-wrapper::-webkit-scrollbar-track {
+    background: #f4f4f4;
+}
 *::-webkit-scrollbar-thumb {
     background-color: rgba(0,0,0,0.2);
     border-radius: 10px;
-    border: 3px solid #ffffff;
 }
   
 #task-group {
