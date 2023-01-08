@@ -22,7 +22,7 @@ export class TodolistUI {
             data.forEach(i => {
                 // Draw all groups button
                 $(".todolist-groups-wrapper")
-                    .append(this.generateGroupElement(i.NAME.toLowerCase()));
+                    .append(this.generateGroupElement(i.NAME));
             });
 
             this.selectGroup("all");
@@ -100,7 +100,9 @@ export class TodolistUI {
      */
     createTodo (quill) {
         const taskText = quill.root.innerHTML;
-        const taskGroup = $("#task-group").val().replaceAll(" ", "_");
+        const taskGroup = $("#task-group").val()
+            .replace(/[\`,\"\']/g, "_")
+            .toLowerCase();
 
         if (taskText == "" || taskGroup == "") {
             alert("The task or its group cannot be empty");
@@ -114,10 +116,10 @@ export class TodolistUI {
                         data.GROUP, data.ID, data.STATUS, data.DATE, data.TEXT
                     ));
 
-                if ($(`#group-${taskGroup}`).length == 0) {
+                if ($(`.todolist-group-button[group="${taskGroup}"]`).length == 0) {
                     // Append new group
                     $(".todolist-groups-wrapper").append(this.generateGroupElement(taskGroup));
-                    $(`#group-${taskGroup} span`).click();
+                    $(`.todolist-group-button[group="${taskGroup}"] span`).click();
                 }
 
                 // Close modal
@@ -210,8 +212,8 @@ export class TodolistUI {
      */
     generateGroupElement (taskGroup) {
         return `
-            <div class="todolist-group-button" id="group-${taskGroup}" style="background: rgba(255, 255, 255);">
-                <span>${taskGroup.replaceAll("_", " ")}</span>
+            <div class="todolist-group-button" group="${taskGroup}" style="background: rgba(255, 255, 255);">
+                <span>${taskGroup}</span>
                 <div class="group-element-delete">
                     <img src="./static/images/delete.svg">
                 </div>
@@ -269,7 +271,7 @@ export class TodolistUI {
      */
     selectGroup (group) {
         this.unselectAllGroup();
-        $(`#group-${group}`).css("background", "rgba(0, 0, 0, 0.1)");
+        $(`.todolist-group-button[group="${group}"]`).css("background", "rgba(0, 0, 0, 0.1)");
         this.drawTodos(group);
     };
 
@@ -280,7 +282,7 @@ export class TodolistUI {
      */
     selectGroupClick (event) {
         const groupElement = $(event.target).closest(".todolist-group-button");
-        const group = $(groupElement).attr("id").replace("group-", "");
+        const group = $(groupElement).attr("group");
         this.selectGroup(group);
     };
 
@@ -291,12 +293,12 @@ export class TodolistUI {
      */
     deleteGroup (event) {
         const groupElement = $(event.target).closest(".todolist-group-button");
-        const group = $(groupElement).attr("id").replace("group-", "");
+        const group = $(groupElement).attr("group");
 
         this.api.deleteGroup(group).done((data) => {
             if (data.ERROR == undefined) {
-                $(`#group-${group}`).remove();
-                $("#group-all span").click();
+                $(`.todolist-group-button[group="${group}"]`).remove();
+                $(`.todolist-group-button[group="all"] span`).click();
             } else {
                 alert(data.ERROR);
             }

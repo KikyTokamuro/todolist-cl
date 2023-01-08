@@ -32,7 +32,7 @@
 		  (:a :href "https://github.com/KikyTokamuro/todolist-cl" :target "_blank"
 		      (version)))
 	    (:div :class "todolist-groups-wrapper"
-		  (:div :class "todolist-group-button" :id "group-all"
+		  (:div :class "todolist-group-button" :group "all"
 			(:span "all")))
 	    (:div :class "todolist-search-wrapper"
 		  (:input :type "text" :id "search-input" :placeholder "Insert search filter"))

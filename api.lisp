@@ -120,7 +120,7 @@
 	  do (let* ((group-name-sym (string-to-keyword (getf stats ':group)))
 		    (status-sym (string-to-keyword (getf stats ':status)))
 		    (count (getf stats ':count))
-		    (group-origname (substitute #\space #\_ (getf stats ':group))))
+		    (group-origname (getf stats ':group)))
 	       (if (not (getf response group-name-sym))
 		   (setf (getf response group-name-sym) (list :todo 0 :doing 0 :done 0 :origname group-origname)))
 	       (setf (getf (getf response group-name-sym) status-sym) count)))
