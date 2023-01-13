@@ -38,7 +38,7 @@ sbcl --load .\todolist.asd `
 ```
 MIT License
 
-Copyright (c) 2022 Daniil Arkhangelsky (Kiky Tokamuro)
+Copyright (c) 2022-2023 Daniil Arkhangelsky (Kiky Tokamuro)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
