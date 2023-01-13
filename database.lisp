@@ -7,13 +7,13 @@
 
 ;;; Todos table
 (mito:deftable todos ()
-	       ((group :col-type :text)
-		(text :col-type :text)
-		(status :col-type :text)))
+  ((group :col-type :text)
+   (text :col-type :text)
+   (status :col-type :text)))
 
 ;;; Groups table
 (mito:deftable groups ()
-	       ((name :col-type :text)))
+  ((name :col-type :text)))
 
 (defun check-first-run ()
   "Check first run application"
@@ -36,9 +36,9 @@
   "Connect to database"
   (format t "DATABASE: Starting connection...~%")
   (check-first-run)
-  (mito:connect-toplevel :sqlite3 :database-name "db")
-  (mapcar #'mito:ensure-table-exists '(todos groups))
+  (mito:connect-toplevel :sqlite3 :database-name *db-file*)
   (when *first-run*
+    (mapcar #'mito:ensure-table-exists '(todos groups))
     (create-default-database-values)
     (setf *first-run* nil))
   (format t "DATABASE: Connection started...~%"))
