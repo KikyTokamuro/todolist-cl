@@ -7,8 +7,8 @@
   (asdf:system-relative-pathname "todolist" dir))
 
 ;;; Generate hunchentoot:define-easy-handler with json content-type
-(defmacro json-router (name uri &rest body)
-  `(hunchentoot:define-easy-handler (,name :uri ,uri) ()
+(defmacro json-router ((&key name uri (request-type :get)) &body body)
+  `(hunchentoot:define-easy-handler (,name :uri ,uri :default-request-type ,request-type) ()
     (setf (hunchentoot:content-type*) "application/json")
     ,@body))
 
@@ -32,48 +32,48 @@
 
 
 ;;; Get list of groups
-(json-router api-group-list-handler "/api/group/list"
-	     (api-group-list))
+(json-router (:name api-group-list-handler :uri "/api/group/list")
+  (api-group-list))
 
 ;;; Delete group
-(json-router api-group-delete-handler "/api/group/delete"
-	     (api-group-delete (hunchentoot:get-parameter "group")))
+(json-router (:name api-group-delete-handler :uri "/api/group/delete" :request-type :post)
+  (api-group-delete (hunchentoot:post-parameter "group")))
 
 ;;; Get list of todos
-(json-router api-todos-all-handler "/api/todos/all"
-	     (api-todos-all))
+(json-router (:name api-todos-all-handler :uri "/api/todos/all")
+  (api-todos-all))
 
 ;;; Get list of todos by group
-(json-router api-todos-by-group-handler "/api/todos"
-	     (api-todos-by-group (hunchentoot:get-parameter "group")))
+(json-router (:name api-todos-by-group-handler :uri "/api/todos")
+  (api-todos-by-group (hunchentoot:get-parameter "group")))
 
 ;;; Get todo by group and id
-(json-router api-todos-by-group-and-id-handler "/api/todos/get"
-	     (api-todos-by-group-and-id (hunchentoot:get-parameter "group")
-					(hunchentoot:get-parameter "todoid")))
+(json-router (:name api-todos-by-group-and-id-handler :uri "/api/todos/get")
+  (api-todos-by-group-and-id (hunchentoot:get-parameter "group")
+			     (hunchentoot:get-parameter "todoid")))
 
 ;;; Change todo status
-(json-router api-todos-change-status-handler "/api/todos/status/change"
-	     (api-todos-change-status (hunchentoot:get-parameter "group")
-				      (hunchentoot:get-parameter "todoid")
-				      (hunchentoot:get-parameter "status")))
+(json-router (:name api-todos-change-status-handler :uri "/api/todos/status/change" :request-type :post)
+  (api-todos-change-status (hunchentoot:post-parameter "group")
+			   (hunchentoot:post-parameter "todoid")
+			   (hunchentoot:post-parameter "status")))
 
 ;;; Change todo text
-(json-router api-todos-change-text-handler "/api/todos/text/change"
-	     (api-todos-change-text (hunchentoot:get-parameter "group")
-				    (hunchentoot:get-parameter "todoid")
-				    (hunchentoot:get-parameter "text")))
+(json-router (:name api-todos-change-text-handler :uri "/api/todos/text/change" :request-type :post)
+  (api-todos-change-text (hunchentoot:post-parameter "group")
+			 (hunchentoot:post-parameter "todoid")
+			 (hunchentoot:post-parameter "text")))
 
 ;;; Delete todo by group and id
-(json-router api-todos-delete-handler "/api/todos/delete"
-	     (api-todos-delete (hunchentoot:get-parameter "group")
-			       (hunchentoot:get-parameter "todoid")))
+(json-router (:name api-todos-delete-handler :uri "/api/todos/delete")
+  (api-todos-delete (hunchentoot:post-parameter "group")
+		    (hunchentoot:post-parameter "todoid")))
 
 ;;; Add new todo in group
-(json-router api-todos-add-handler "/api/todos/add"
-	     (api-todos-add (hunchentoot:get-parameter "group")
-			    (hunchentoot:get-parameter "text")))
+(json-router (:name api-todos-add-handler :uri "/api/todos/add" :request-type :post)
+  (api-todos-add (hunchentoot:post-parameter "group")
+		 (hunchentoot:post-parameter "text")))
 
 ;;; Get todos statistics
-(json-router api-todos-get-stats-handler "/api/todos/stats"
-	     (api-todos-get-stats))
+(json-router (:name api-todos-get-stats-handler :uri "/api/todos/stats")
+  (api-todos-get-stats))

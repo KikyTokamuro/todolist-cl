@@ -20,7 +20,7 @@ export class TodolistAPI {
      * @returns jqXHR
      */
     deleteGroup (group) {
-        return $.get('/api/group/delete', {
+        return $.post('/api/group/delete', {
             group: group
         }, 'json');
     }
@@ -78,7 +78,7 @@ export class TodolistAPI {
      * @returns jqXHR
      */
     changeTodoStatus (group, id, status) {
-        return $.get('/api/todos/status/change', {
+        return $.post('/api/todos/status/change', {
             group:  group,
             todoid: id,
             status: status
@@ -94,7 +94,7 @@ export class TodolistAPI {
      * @returns jqXHR
      */
      changeTodoText (group, id, text) {
-        return $.get('/api/todos/text/change', {
+        return $.post('/api/todos/text/change', {
             group:  group,
             todoid: id,
             text:   text
@@ -109,7 +109,7 @@ export class TodolistAPI {
      * @returns jqXHR
      */
     createNewTodo (group, text) {
-        return $.get('/api/todos/add', {
+        return $.post('/api/todos/add', {
             group: group,
             text:  text,
         }, 'json');
@@ -123,7 +123,7 @@ export class TodolistAPI {
      * @returns jqXHR
      */
     deleteTodo (group, todoid) {
-        return $.get('/api/todos/delete', {
+        return $.post('/api/todos/delete', {
             group:  group,
             todoid: todoid,
         }, 'json');
