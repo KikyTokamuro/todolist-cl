@@ -61,4 +61,6 @@
 		  (:img :src "./static/images/save.svg")
 		  "Save changes"))
       (:div :class "todolist-statistics-modal" :style "display:none" :title "Statistics")
+      (:div :class "todolist-error-modal" :style "display:none" :title "Error"
+	    (:div :class "todolist-error-text"))
       (:script :type "module" :src "./static/app.js")))))

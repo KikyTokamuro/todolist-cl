@@ -62,6 +62,24 @@ export class TodolistUI {
     };
 
     /**
+     * Show error message
+     * 
+     * @param {string} err 
+     */
+    showError(err) {
+        // Show modal window
+        $(".todolist-error-modal").dialog({
+            height: window.innerHeight / 4,
+            width: window.innerWidth / 3,
+            modal: true,
+            dialogClass: 'todolist-error-dialog',
+            open: function( event, ui ) {
+                $(event.target).find(".todolist-error-text").text(err);
+            }
+        });
+    }
+
+    /**
      * Show create task modal window
      */
     showCreateTask() {
@@ -105,7 +123,7 @@ export class TodolistUI {
             .toLowerCase();
 
         if (taskText == "" || taskGroup == "") {
-            alert("The task or its group cannot be empty");
+            this.showError("The task or its group cannot be empty");
             return;
         }
 
@@ -125,7 +143,7 @@ export class TodolistUI {
                 // Close modal
                 $(".todolist-create-task-modal").dialog("close");
             } else {
-                alert(data.ERROR);
+                this.showError(data.ERROR);
             }
         });
     };
@@ -300,7 +318,7 @@ export class TodolistUI {
                 $(`.todolist-group-button[group="${group}"]`).remove();
                 $(`.todolist-group-button[group="all"] span`).click();
             } else {
-                alert(data.ERROR);
+                this.showError(data.ERROR);
             }
         });
     };
@@ -319,7 +337,7 @@ export class TodolistUI {
             if (data.ERROR == undefined) {
                 $(`.task-element[todo-id="${data.ID}"][group="${data.GROUP}"]`).remove();
             } else {
-                alert(data.ERROR);
+                this.showError(data.ERROR);
             }
         });
     };
@@ -371,14 +389,14 @@ export class TodolistUI {
                                             // Close modal
                                             $(".todolist-edit-task-modal").dialog("close");
                                         } else {
-                                            alert(data.ERROR);
+                                            this.showError(data.ERROR);
                                         }
                                     });
                             });
                     }
                 });
             } else {
-                alert(data.ERROR);
+                this.showError(data.ERROR);
             }
         });
     };
@@ -412,7 +430,7 @@ export class TodolistUI {
                 // Change status on element
                 $(element).attr("status", newStatus);
             } else {
-                alert(data.ERROR);
+                this.showError(data.ERROR);
             }
         });
     };
