@@ -50,24 +50,24 @@
 ;;; Get todo by group and id
 (json-router (:name api-todos-by-group-and-id-handler :uri "/api/todos/get")
   (api-todos-by-group-and-id (hunchentoot:get-parameter "group")
-			     (hunchentoot:get-parameter "todoid")))
+			     (hunchentoot:get-parameter "todo")))
 
 ;;; Change todo status
 (json-router (:name api-todos-change-status-handler :uri "/api/todos/status/change" :request-type :post)
   (api-todos-change-status (hunchentoot:post-parameter "group")
-			   (hunchentoot:post-parameter "todoid")
+			   (hunchentoot:post-parameter "todo")
 			   (hunchentoot:post-parameter "status")))
 
 ;;; Change todo text
 (json-router (:name api-todos-change-text-handler :uri "/api/todos/text/change" :request-type :post)
   (api-todos-change-text (hunchentoot:post-parameter "group")
-			 (hunchentoot:post-parameter "todoid")
+			 (hunchentoot:post-parameter "todo")
 			 (hunchentoot:post-parameter "text")))
 
 ;;; Delete todo by group and id
 (json-router (:name api-todos-delete-handler :uri "/api/todos/delete")
   (api-todos-delete (hunchentoot:post-parameter "group")
-		    (hunchentoot:post-parameter "todoid")))
+		    (hunchentoot:post-parameter "todo")))
 
 ;;; Add new todo in group
 (json-router (:name api-todos-add-handler :uri "/api/todos/add" :request-type :post)

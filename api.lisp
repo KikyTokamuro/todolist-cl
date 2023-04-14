@@ -2,22 +2,22 @@
 
 (in-package #:todolist)
 
-(defun string-to-keyword (str)
-  "String -> :KEYWORD"
-  (values (intern (string-upcase str) "KEYWORD")))
-
 (defun json-error (message)
   "Generate JSON error"
   (jonathan:to-json (list :error message)))
 
 (defun todo-to-list (todo)
   "Todo -> list"
-  (list :id (mito:object-id todo)
-	:group (todos-group todo)
-	:status (todos-status todo)
-	:text (todos-text todo)
-	:date (local-time:format-timestring nil (mito:object-updated-at todo)
-					    :format local-time:+asctime-format+)))
+  (let ((status (mito:find-dao 'statuses :id (todos-status-id todo)))
+	(group (mito:find-dao 'groups :id (todos-group-id todo))))
+    (list :id (mito:object-id todo)
+	  :group-id (mito:object-id group)
+	  :group-name (groups-name group)
+	  :status-name (statuses-name status)
+	  :status-id (mito:object-id status)
+	  :text (todos-text todo)
+	  :date (local-time:format-timestring nil (mito:object-updated-at todo)
+					      :format local-time:+asctime-format+))))
 
 (defun api-group-list ()
   "Return list of groups"
@@ -25,51 +25,41 @@
 				(list :id (mito:object-id group) :name (groups-name group)))
 			    (mito:select-dao 'groups))))
 
-(defun api-group-delete (group-name)
+(defun api-group-delete (group-id)
   "Delete group"
-  (mito:delete-by-values 'groups :name group-name)
-  (mito:delete-by-values 'todos :group group-name)
+  (mito:delete-by-values 'groups :id group-id)
+  (mito:delete-by-values 'todos :group-id group-id)
   (jonathan:to-json '(:group group-name)))
 
 (defun api-todos-all ()
   "Return all todos"
-  (let ((response '()))
-    (loop for todo in (mito:select-dao 'todos)
-	  do (let* ((group-name (todos-group todo))
-		    (group-name-sym (string-to-keyword group-name))
-		    (response-element (getf response group-name-sym))
-		    (todo-info (todo-to-list todo)))
-	       (if response-element
-		   (setf (getf response group-name-sym) (append response-element (list todo-info)))
-		   (setf (getf response group-name-sym) (list todo-info)))))
-    (jonathan:to-json response)))
+  (jonathan:to-json
+   (loop for todo in (mito:select-dao 'todos)
+	 collect (todo-to-list todo))))
 
-(defun api-todos-by-group (group-name)
+(defun api-todos-by-group (group-id)
   "Return todos from group"
   (jonathan:to-json
-   (if group-name
-       (mapcar #'(lambda (todo)
-		   (todo-to-list todo))
-	       (mito:retrieve-dao 'todos :group group-name))
-       '())))
+   (loop for todo in (mito:retrieve-dao 'todos :group-id group-id)
+	 collect (todo-to-list todo))))
 
-(defun api-todos-by-group-and-id (group-name todo-id)
+(defun api-todos-by-group-and-id (group-id todo-id)
   "Return todo by group and id"
-  (cond ((null (and group-name todo-id))
+  (cond ((null (and group-id todo-id))
 	 (json-error "Empty params"))
 	(t
-	 (let ((todo (mito:find-dao 'todos :id todo-id :group group-name)))
+	 (let ((todo (mito:find-dao 'todos :id todo-id :group-id group-id)))
 	   (if (not todo)
 	       (json-error "Todo not found")
 	       (progn
 		 (jonathan:to-json (todo-to-list todo))))))))
 
-(defun api-todos-change-text (group-name todo-id text)
+(defun api-todos-change-text (group-id todo-id text)
   "Change todo text"
-  (cond ((null (and group-name todo-id text))
+  (cond ((null (and group-id todo-id text))
 	 (json-error "Empty params"))
 	(t
-	 (let ((todo (mito:find-dao 'todos :id todo-id :group group-name)))
+	 (let ((todo (mito:find-dao 'todos :id todo-id :group-id group-id)))
 	   (if (not todo)
 	       (json-error "Todo not found")
 	       (progn
@@ -77,54 +67,55 @@
 		 (mito:save-dao todo)
 		 (jonathan:to-json (todo-to-list todo))))))))
 
-(defun api-todos-change-status (group-name todo-id status)
+(defun api-todos-change-status (group-id todo-id status-id)
   "Change todo status"
-  (cond ((null (and group-name todo-id status))
+  (cond ((null (and group-id todo-id status-id))
 	 (json-error "Empty params"))
-	((null (find status '("todo" "doing" "done") :test #'string=))
+	((null (mito:retrieve-dao 'statuses :id status-id))
 	 (json-error "Bad todo status"))
 	(t
-	 (let ((todo (mito:find-dao 'todos :id todo-id :group group-name)))
+	 (let ((todo (mito:find-dao 'todos :id todo-id :group-id group-id)))
 	   (if (not todo)
 	       (json-error "Todo not found")
 	       (progn
-		 (setf (slot-value todo 'status) status)
+		 (setf (slot-value todo 'status-id) status-id)
 		 (mito:save-dao todo)
 		 (jonathan:to-json (todo-to-list todo))))))))
 
-(defun api-todos-delete (group-name todo-id)
+(defun api-todos-delete (group-id todo-id)
   "Delete todo by id and group"
-  (mito:delete-by-values 'todos :id todo-id :group group-name)
-  (jonathan:to-json (list :id todo-id :group group-name)))
+  (mito:delete-by-values 'todos :id todo-id :group-id group-id)
+  (jonathan:to-json (list :id todo-id :group-id group-id)))
 
 (defun api-todos-add (group-name text)
   "Add new todo"
   (if (not (and group-name text))
       (json-error "Empty params")
       (progn
-	(when (not (mito:find-dao 'groups 'name group-name))
+	(when (not (mito:find-dao 'groups :name group-name))
 	  (mito:create-dao 'groups :name group-name))
-	(let ((todo (mito:create-dao 'todos :group group-name :text text :status "todo")))
+	(let* ((group (mito:find-dao 'groups :name group-name))
+	       (todo (mito:create-dao 'todos :group-id (mito:object-id group) :text text :status-id 1)))
 	  (if todo
 	      (jonathan:to-json (todo-to-list todo))
 	      (json-error "Error create todo"))))))
 
 (defun api-todos-get-stats ()
   "Get statistics by todos"
-  (let ((response '())
-	(todos-stats (mito:retrieve-by-sql
-		      (sxql:select (:group :status (:as (:count :*) :count))
-			(sxql:group-by :group :status)
-			(sxql:from (sxql:make-sql-symbol (mito.class.table:table-name (find-class 'todos))))))))
-    (loop for stats in todos-stats
-	  do (let* ((group-name-sym (string-to-keyword (getf stats ':group)))
-		    (status-sym (string-to-keyword (getf stats ':status)))
-		    (count (getf stats ':count))
-		    (group-origname (getf stats ':group)))
-	       (if (not (getf response group-name-sym))
-		   (setf (getf response group-name-sym) (list :todo 0 :doing 0 :done 0 :origname group-origname)))
-	       (setf (getf (getf response group-name-sym) status-sym) count)))
-    (jonathan:to-json response)))
+  (let ((statuses (mapcar #'(lambda (status)
+			      (list :id (mito:object-id status) :name (statuses-name status)))
+			  (mito:select-dao 'statuses)))
+	(stats (mito:retrieve-by-sql
+		(sxql:select (:group_id
+			      (:as :groups.name :group_name)
+			      :status_id
+			      (:as :statuses.name :status_name)
+			      (:as (:count :*) :count))
+		  (sxql:left-join :statuses :on (:= :statuses.id :todos.status_id))
+		  (sxql:left-join :groups :on (:= :groups.id :todos.group_id))
+		  (sxql:group-by :group_id :status_id)
+		  (sxql:from :todos)))))
+    (jonathan:to-json (list :statuses statuses :stats stats))))
 
 (defun api-todos-export-csv ()
   "Export todos to csv"
@@ -132,8 +123,8 @@
 	  `(("id" "group" "status" "text" "date")
 	    ,@(mapcar #'(lambda (todo)
 			  (list (mito:object-id todo)
-				(todos-group todo)
-				(todos-status todo)
+				(groups-name (mito:find-dao 'groups :id (todos-group-id todo)))
+				(statuses-name (mito:find-dao 'statuses :id (todos-status-id todo)))
 				(todos-text todo)
 				(local-time:format-timestring nil (mito:object-updated-at todo)
 							      :format local-time:+asctime-format+)))

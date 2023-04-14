@@ -24,28 +24,26 @@
       (:script :src "./static/libs/liner-bar.js"))
      (:body
       (:div :class "todolist-wrapper"
-	    (:div :class "todolist-tools"
-		  (:a :id "generate-csv" :href "/api/generate/csv"
-		      (:img :src "./static/images/csv.svg"))
-		  (:div :id "statistics"
-		      (:img :src "./static/images/stats.svg"))
-		  (:a :href "https://github.com/KikyTokamuro/todolist-cl" :target "_blank"
-		      (version)))
+	    (:div :class "todolist-header"
+		  (:div :class "todolist-logo"
+			(:a :href "https://github.com/KikyTokamuro/todolist-cl" :target "_blank"
+			    (:span :class "todolist-logo-text" "todolist-cl")
+			    (version)))
+		  (:div :class "todolist-tools"
+			(:a :id "generate-csv" :href "/api/generate/csv"
+			    (:img :src "./static/images/csv.svg"))
+			(:div :id "statistics"
+			      (:img :src "./static/images/stats.svg"))))
 	    (:div :class "todolist-groups-wrapper"
 		  (:div :class "todolist-group-button" :group "all"
 			(:span "all")))
 	    (:div :class "todolist-search-wrapper"
 		  (:input :type "text" :id "search-input" :placeholder "Insert search filter"))
 	    (:div :class "todolist-body"
-		  (:div :class "todolist-todo-column"
-			(:div :class "todolist-todo-column-title" "TODO")
-			(:div :class "column todolist-todo-column-body"))
-		  (:div :class "todolist-doing-column"
-			(:div :class "todolist-doing-column-title" "DOING")
-			(:div :class "column todolist-doing-column-body"))
-		  (:div :class "todolist-done-column"
-			(:div :class "todolist-done-column-title" "DONE")
-			(:div :class "column todolist-done-column-body")))
+		  (dolist (status (mito:retrieve-dao 'statuses))
+		    (:div :class "todolist-column"
+			  (:div :class "todolist-column-title" (statuses-name status))
+			  (:div :class "column todolist-column-body" :status (mito:object-id status)))))
 	    (:div :class "todolist-create-button"
 		  (:img :src "./static/images/pencil.svg")))
       (:div :class "todolist-create-task-modal" :style "display:none" :title "New task"

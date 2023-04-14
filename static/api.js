@@ -50,13 +50,13 @@ export class TodolistAPI {
      * Get todo by group and id
      * 
      * @param {string} group 
-     * @param {number} todoid 
+     * @param {string} todo 
      * @returns jqXHR
      */
-    getTodoByGroupAndId(group, todoid) {
+    getTodoByGroupAndId(group, todo) {
         return $.get('/api/todos/get', {
-            group:  group,
-            todoid: todoid,
+            group: group,
+            todo:  todo,
         }, 'json');
     }
 
@@ -73,14 +73,14 @@ export class TodolistAPI {
      * Change todo status
      * 
      * @param {string} group 
-     * @param {number} id 
+     * @param {string} todo 
      * @param {string} status 
      * @returns jqXHR
      */
-    changeTodoStatus (group, id, status) {
+    changeTodoStatus (group, todo, status) {
         return $.post('/api/todos/status/change', {
             group:  group,
-            todoid: id,
+            todo:   todo,
             status: status
         }, 'json');
     };
@@ -89,15 +89,15 @@ export class TodolistAPI {
      * Change todo text
      * 
      * @param {string} group 
-     * @param {number} id 
+     * @param {string} todo 
      * @param {string} text 
      * @returns jqXHR
      */
-     changeTodoText (group, id, text) {
+    changeTodoText (group, todo, text) {
         return $.post('/api/todos/text/change', {
-            group:  group,
-            todoid: id,
-            text:   text
+            group: group,
+            todo:  todo,
+            text:  text
         }, 'json');
     };
 
@@ -119,13 +119,13 @@ export class TodolistAPI {
      * Delete todo item
      * 
      * @param {string} group 
-     * @param {number} todoid 
+     * @param {string} todo
      * @returns jqXHR
      */
-    deleteTodo (group, todoid) {
+    deleteTodo (group, todo) {
         return $.post('/api/todos/delete', {
-            group:  group,
-            todoid: todoid,
+            group: group,
+            todo:  todo,
         }, 'json');
     }
 }

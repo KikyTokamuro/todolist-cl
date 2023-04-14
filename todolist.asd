@@ -4,7 +4,7 @@
   :description "Todolist with web UI"
   :author "Daniil Archangelsky <kiky.tokamuro@yandex.ru>"
   :license  "MIT"
-  :version "2.1.0"
+  :version "3.0.0"
   :serial t
   :depends-on (#:hunchentoot #:spinneret #:jonathan #:mito)
   :components ((:file "package")
