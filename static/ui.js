@@ -145,9 +145,12 @@ export class TodolistUI {
             return;
         }
 
+        const currentGroup = $(`.todolist-group-button[style="background: rgba(0, 0, 0, 0.1);"]`)
+            .attr("group");
+
         this.api.createNewTodo(taskGroup, taskText).done((data) => {
             if (data.ERROR == undefined) {
-                if ($(`.todolist-group-button[group="${data["GROUP-ID"]}"][style="background: rgba(0, 0, 0, 0.1);"]`).length !== 0) {
+                if (["all", data["GROUP-ID"].toString()].includes(currentGroup)) {
                     $(`.todolist-column-body[status=${data["STATUS-ID"]}]`)
                         .append(this.generateTaskElement(
                             data["GROUP-ID"],
