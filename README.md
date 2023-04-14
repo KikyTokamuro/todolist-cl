@@ -3,8 +3,6 @@
 Todolist with web UI, written in Common Lisp
 
 ![preview](./screenshots/preview.png)
-![preview](./screenshots/preview-2.png)
-![preview](./screenshots/preview-3.png)
 
 ## Dependencies
  - [hunchentoot](https://github.com/edicl/hunchentoot) - Web server
